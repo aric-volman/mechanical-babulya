@@ -15,9 +15,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void setGridText(std::vector<std::vector<int>> inputGrid);
+    void setGridText();
     void getGridText();
-
 private slots:
     void on_actionImport_triggered();
 
@@ -27,5 +26,6 @@ private:
     Ui::MainWindow *ui;
     QString openedFile = "";
     std::vector<std::vector<int>> grid;
+    void initGrid();
 };
 #endif // MAINWINDOW_H

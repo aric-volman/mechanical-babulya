@@ -18,16 +18,26 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setGridText(std::vector<std::vector<int>> inputGrid) {
-   QList<QLineEdit *> lineEdits = ui->gridLayout->findChildren<QLineEdit *>();
+void MainWindow::setGridText() {
    int total = 0;
    for (int y = 0; y < 9; y++) {
        for (int x = 0; x < 9; x++) {
-           QLineEdit* current = lineEdits.at(0);
-           current->setText(tr("1"));
+           QLineEdit* current = qobject_cast<QLineEdit *>(ui->gridLayout->itemAtPosition(y, x)->widget());
+           if (grid.at(y).at(x) != 0) {
+                current->setText(QString::fromStdString(std::to_string(grid.at(y).at(x))));
+           }
            total++;
        }
    }
+}
+
+void MainWindow::initGrid() {
+    grid.resize(9);
+    for(int y = 0; y < 9; y++) {
+        for(int x = 0; x < 9; x++) {
+            grid[y].push_back(x);
+        }
+    }
 }
 
 
@@ -46,19 +56,29 @@ void MainWindow::on_actionImport_triggered()
     QString text = in.read(81); // Final text output
     std::string textStdRaw = text.toStdString();
     std::cout << textStdRaw << std::endl;
+    initGrid();
     // Converts entire string to 2D vector
     int total = 0;
-    /*
+
     for (int y = 0; y < std::sqrt(textStdRaw.size()); y++) {
         for (int x = 0; x < std::sqrt(textStdRaw.size()); x++) {
             grid.at(y).at(x) = (textStdRaw.at(total)-'0');
             if (!std::isdigit(textStdRaw.at(total))) {
-                QMessageBox::critical(this, "Warning", "Contents of file are not numbers");
+                QMessageBox::warning(this, "Warning", "Contents of file are not numbers");
             }
             total++;
         }
-    }*/
-    setGridText(grid);
+    }
+    setGridText();
+    // QList<QLineEdit *> lineEdits = ui->gridLayout->findChildren<QLineEdit *>();
+    //edit->setText("a");
+    //QLineEdit* btn = qobject_cast<QLineEdit *>(ui->gridLayout->itemAtPosition(0, 0)->widget());
+    //btn->setText("hello");
+    // setGridText();
+    //int x = 0;
+    //QLineEdit* current = qobject_cast<QLineEdit *>(ui->gridLayout->itemAtPosition(0, x)->widget());
+    //current->setText(tr("1"));
+
     ui->textEdit->setText(text);
 
 }
