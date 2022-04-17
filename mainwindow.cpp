@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    initGrid();
     ui->setupUi(this);
 }
 
@@ -19,23 +20,37 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::setGridText() {
-   int total = 0;
    for (int y = 0; y < 9; y++) {
        for (int x = 0; x < 9; x++) {
            QLineEdit* current = qobject_cast<QLineEdit *>(ui->gridLayout->itemAtPosition(y, x)->widget());
            if (grid.at(y).at(x) != 0) {
                 current->setText(QString::fromStdString(std::to_string(grid.at(y).at(x))));
            }
-           total++;
        }
    }
 }
+
+
+void MainWindow::getGridText() {
+   for (int y = 0; y < 9; y++) {
+       for (int x = 0; x < 9; x++) {
+           QLineEdit* current = qobject_cast<QLineEdit *>(ui->gridLayout->itemAtPosition(y, x)->widget());
+           if (!(current->text() == "") && current->text().toInt() > 0 && current->text().toInt() <= 9) {
+                grid.at(y).at(x) = current->text().toInt();
+           } else {
+                grid.at(y).at(x) = 0;
+           }
+       }
+   }
+}
+
 
 void MainWindow::initGrid() {
     grid.resize(9);
     for(int y = 0; y < 9; y++) {
         for(int x = 0; x < 9; x++) {
-            grid[y].push_back(x);
+            grid[y].push_back(0);
+            std::cout << "here" << std::endl;
         }
     }
 }
@@ -43,20 +58,17 @@ void MainWindow::initGrid() {
 
 void MainWindow::on_actionImport_triggered()
 {
-    openedFile.clear();
     ui->textEdit->setText(QString());
     QString fileName = QFileDialog::getOpenFileName(this, tr("Import text file"));
     QFile file(fileName);
-    openedFile = fileName;
     if (!file.open(QIODevice::ReadWrite | QFile::Text)) {
-        QMessageBox::warning(this, "Warning", "File not found");
+        QMessageBox::warning(this, "Warning", "File not found or readable");
     }
     setWindowTitle("Mechanical Babulya - " + fileName);
     QTextStream in(&file);
     QString text = in.read(81); // Final text output
     std::string textStdRaw = text.toStdString();
     std::cout << textStdRaw << std::endl;
-    initGrid();
     // Converts entire string to 2D vector
     int total = 0;
 
@@ -86,6 +98,22 @@ void MainWindow::on_actionImport_triggered()
 
 void MainWindow::on_actionExport_triggered()
 {
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Sudoku"), ".", tr("Text files (*.txt)"));
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadWrite | QFile::Text)) {
+        QMessageBox::warning(this, "Warning", "File not found or readable");
+    }
+    QTextStream out(&file);
+    getGridText();
+    QString line;
+    for (int y = 0; y < 9; y++) {
+        for (int x = 0; x < 9; x++) {
+            line += QString::number(grid.at(y).at(x));
+        }
+    }
+    out << line;
 
+    // std::cout << grid.empty() << std::endl;
+    // std::cout << grid.at(0).at(0) << std::endl;
 }
 
