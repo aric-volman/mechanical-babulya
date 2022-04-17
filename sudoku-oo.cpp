@@ -78,12 +78,12 @@ class solver {
 				findColumnIndices();
 				findSquareIndices();
 				combineIndices();
+
 				hiddenSinglesToNakedSingles();
 				nakedSingles();
 				printGrid();
-				int complete = int(checkGridForCompletion()) ;
-				std::cout << "Complete??:" << complete << std::endl;
-				return complete * ec;
+				int complete = int(checkGridForCompletion());
+				return complete;
 			}
 
 		void solve() {
@@ -92,10 +92,14 @@ class solver {
 				if (p) {
 					std::cout << p << std::endl;
 					break;
-				};
-				if(p == -1) {
-					std::cout << "Error" << std::endl;
+				} else if (ec) {
+					std::cout << "Duplicate found" << std::endl;
+					break;
+				} else if (gridSum == previousSum) {
+					std::cout << "Impossible puzzle!" << std::endl;
+					break;
 				}
+				previousSum = gridSum;
 			}
 		}
 
@@ -107,7 +111,9 @@ class solver {
 		std::vector<std::string> index_row;
 		std::vector<std::string> index_column;
 		std::vector<std::vector<std::string>> index_square;
-		int ec = 1;
+		int ec = 0;
+		int gridSum = 0;
+		int previousSum = -1; // Something impossible to start
 
 		void findRowIndices() {
 			// Row indices
@@ -145,9 +151,10 @@ class solver {
 			for (int m = 0; m < index_row.size(); m++) {
 				for (int j = 0; j < index_column.size(); j++) {
 						index_combined.at(m).at(j) = or_indices(index_row.at(m), index_column.at(j), index_square.at((int)m/3).at((int)j/3), grid.at(m).at(j));
+						std::cout << index_combined.at(m).at(j) << std::endl;
 				}
 			}
-			// Final NOT and error check
+			// Final NOT
 			for (int i = 0; i < index_combined.at(0).size(); i++) {
 				for (int j = 0; j < index_combined.size(); j++) {
 					index_combined.at(i).at(j) = not_index(index_combined.at(i).at(j));
@@ -216,17 +223,19 @@ class solver {
 		}
 
 		bool checkGridForCompletion() {
-			int sum;
-			for (int y = 0; y < grid.size(); y++) {
-				for (int x = 0; x < grid.at(0).size(); x++) {
-					 sum = grid.at(y).at(x)  + sum;
-				}
-			}
-			return (sum == 414); // 46 x 9
+			gridSum = 0;
+                        for (int y = 0; y < grid.size(); y++) {
+                                for (int x = 0; x < grid.at(0).size(); x++) {
+                                         gridSum = grid.at(y).at(x) + gridSum;
+                                }
+                        }
+			std::cout << "Sum: " << gridSum << std::endl;
+			return (gridSum == 405); // 45 x 9
 		}
 		// --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 		std::string not_index(std::string input) {
+			// std::cout << input << std::endl;
 			for (int k = 0; k < input.size(); k++) {
 				input.at(k) = input.at(k)^1;
 			}
@@ -240,6 +249,10 @@ class solver {
 			for (int k = 0; k < A.size(); k++) {
 				// Converts character to int by subtracting '0', aka ascii code 48
 				D = D + std::to_string((((A.at(k)-'0')||(B.at(k)-'0')||(C.at(k)-'0'))&&(N==0))^(N!=0));
+				// Checks for duplicates
+				if ((A.at(k)-'0') > 1 || (B.at(k)-'0') > 1 || (C.at(k)-'0') > 1) {
+					ec = 1;
+				}
 			}
 			return D;
 		}
