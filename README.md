@@ -1,6 +1,6 @@
 A basic sudoku solver
 
-## What is implemented
+###### What is implemented
 
 # Algorithm
 - Naked Singles
@@ -12,7 +12,7 @@ A basic sudoku solver
 
 ## Goals - Near Term
 
-# Algorithmn
+# Algorithm
 - Implement Hidden Pairs
 # Interface
 - Graph the completion of the sudoku with every pass of the solver
