@@ -1,6 +1,6 @@
 A basic sudoku solver
 
-###### What is implemented
+### What is implemented
 
 # Algorithm
 - Naked Singles
