@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
+#include "lib/solvers/solver.cpp"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -12,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     initGrid();
     ui->setupUi(this);
+    setWindowTitle(tr("Mechanical Babulya"));
 }
 
 MainWindow::~MainWindow()
@@ -19,12 +21,42 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::resetGrid() {
+    for (int y = 0; y < 9; y++) {
+        for (int x = 0; x < 9; x++) {
+            grid.at(y).at(x) = 0;
+        }
+    }
+    setGridText();
+}
+
 void MainWindow::setGridText() {
+   std::vector<std::vector<int>> tempGrid = grid;
+   // Reset grid
+   for (int y = 0; y < 9; y++) {
+       for (int x = 0; x < 9; x++) {
+           grid.at(y).at(x) = 0;
+       }
+   }
+
    for (int y = 0; y < 9; y++) {
        for (int x = 0; x < 9; x++) {
            QLineEdit* current = qobject_cast<QLineEdit *>(ui->gridLayout->itemAtPosition(y, x)->widget());
            if (grid.at(y).at(x) != 0) {
                 current->setText(QString::fromStdString(std::to_string(grid.at(y).at(x))));
+           } else if (grid.at(y).at(x) == 0) {
+                current->setText(tr(""));
+           }
+       }
+   }
+   grid = tempGrid;
+   for (int y = 0; y < 9; y++) {
+       for (int x = 0; x < 9; x++) {
+           QLineEdit* current = qobject_cast<QLineEdit *>(ui->gridLayout->itemAtPosition(y, x)->widget());
+           if (grid.at(y).at(x) != 0) {
+                current->setText(QString::fromStdString(std::to_string(grid.at(y).at(x))));
+           } else if (grid.at(y).at(x) == 0) {
+                current->setText(tr(""));
            }
        }
    }
@@ -35,7 +67,9 @@ void MainWindow::getGridText() {
    for (int y = 0; y < 9; y++) {
        for (int x = 0; x < 9; x++) {
            QLineEdit* current = qobject_cast<QLineEdit *>(ui->gridLayout->itemAtPosition(y, x)->widget());
-           if (!(current->text() == "") && current->text().toInt() > 0 && current->text().toInt() <= 9) {
+           if (current->text().toInt() == 0){
+                grid.at(y).at(x) = 0;
+           } else if (!(current->text() == "") && current->text().toInt() > 0 && current->text().toInt() <= 9) {
                 grid.at(y).at(x) = current->text().toInt();
            } else {
                 grid.at(y).at(x) = 0;
@@ -58,7 +92,6 @@ void MainWindow::initGrid() {
 
 void MainWindow::on_actionImport_triggered()
 {
-    ui->textEdit->setText(QString());
     QString fileName = QFileDialog::getOpenFileName(this, tr("Import text file"));
     QFile file(fileName);
     if (!file.open(QIODevice::ReadWrite | QFile::Text)) {
@@ -71,26 +104,26 @@ void MainWindow::on_actionImport_triggered()
     std::cout << textStdRaw << std::endl;
     // Converts entire string to 2D vector
     int total = 0;
-
+    bool notADigit = false;
     for (int y = 0; y < std::sqrt(textStdRaw.size()); y++) {
         for (int x = 0; x < std::sqrt(textStdRaw.size()); x++) {
             grid.at(y).at(x) = (textStdRaw.at(total)-'0');
-            if (!std::isdigit(textStdRaw.at(total))) {
-                QMessageBox::warning(this, "Warning", "Contents of file are not numbers");
-            }
+            notADigit = !std::isdigit(textStdRaw.at(total));
             total++;
         }
     }
+    if (notADigit) {
+        QMessageBox::warning(this, "Warning", "Contents of file are not numbers");
+    }
+    for (int y = 0; y < 9; y++) {
+        for (int x = 0; x < 9; x++) {
+            QLineEdit* current = qobject_cast<QLineEdit *>(ui->gridLayout->itemAtPosition(y, x)->widget());
+            if (grid.at(y).at(x) != 0) {
+                 current->setText(QString::fromStdString(std::to_string(grid.at(y).at(x))));
+            }
+        }
+    }
     setGridText();
-    // QList<QLineEdit *> lineEdits = ui->gridLayout->findChildren<QLineEdit *>();
-    //edit->setText("a");
-    //QLineEdit* btn = qobject_cast<QLineEdit *>(ui->gridLayout->itemAtPosition(0, 0)->widget());
-    //btn->setText("hello");
-    // setGridText();
-    //int x = 0;
-    //QLineEdit* current = qobject_cast<QLineEdit *>(ui->gridLayout->itemAtPosition(0, x)->widget());
-    //current->setText(tr("1"));
-
     ui->textEdit->setText(text);
 
 }
@@ -112,8 +145,43 @@ void MainWindow::on_actionExport_triggered()
         }
     }
     out << line;
+}
 
-    // std::cout << grid.empty() << std::endl;
-    // std::cout << grid.at(0).at(0) << std::endl;
+
+void MainWindow::on_pushButton_clicked()
+{
+    getGridText();
+/*
+for (int y = 0; y < 9; y++) {
+    for (int x = 0; x < 9; x++) {
+        std::cout << grid.at(y).at(x);
+        }
+        }
+        std::cout << std::endl;
+    */
+    solver *sudokuSolver = new solver();
+    sudokuSolver->setGrid(grid);
+    int warning = sudokuSolver->solve();
+    grid = sudokuSolver->getGrid();
+    delete sudokuSolver;
+    setGridText();
+    if (warning == 1) {
+        QMessageBox::information(this, tr("Mechanical Babulya"), tr("Sudoku is solved!"));
+    } else if (warning == 2) {
+        QMessageBox::warning(this, tr("Error"), tr("Duplicate numbers found!"));
+    } else if (warning == 3) {
+        QMessageBox::warning(this, tr("Error"), tr("Impossible puzzle!"));
+    }
+}
+
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    for (int y = 0; y < 9; y++) {
+        for (int x = 0; x < 9; x++) {
+            grid.at(y).at(x) = 0;
+        }
+    }
+    setGridText();
 }
 

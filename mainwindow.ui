@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1298</width>
-    <height>604</height>
+    <width>474</width>
+    <height>498</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,55 +17,28 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>430</y>
-      <width>80</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>640</x>
+      <x>70</x>
       <y>420</y>
       <width>80</width>
       <height>25</height>
      </rect>
     </property>
-    <property name="text">
-     <string>PushButton</string>
+    <property name="font">
+     <font>
+      <family>Noto Sans</family>
+      <bold>false</bold>
+     </font>
     </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>430</y>
-      <width>221</width>
-      <height>25</height>
-     </rect>
+    <property name="text">
+     <string>Solve</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>20</y>
+      <x>30</x>
+      <y>370</y>
       <width>401</width>
-      <height>191</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTextBrowser" name="textBrowser">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>480</y>
-      <width>221</width>
       <height>41</height>
      </rect>
     </property>
@@ -73,8 +46,8 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>20</y>
+      <x>10</x>
+      <y>10</y>
       <width>440</width>
       <height>351</height>
      </rect>
@@ -325,16 +298,24 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="gridLayoutWidget_2">
+   <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>740</x>
-      <y>270</y>
-      <width>160</width>
-      <height>80</height>
+      <x>310</x>
+      <y>420</y>
+      <width>80</width>
+      <height>25</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout_2"/>
+    <property name="font">
+     <font>
+      <family>Noto Sans</family>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Reset</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -342,7 +323,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1298</width>
+     <width>474</width>
      <height>22</height>
     </rect>
    </property>
