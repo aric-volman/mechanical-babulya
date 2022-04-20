@@ -1,0 +1,25 @@
+﻿<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
+<Identity Name="Volman.Mechanical.Babulya" ProcessorArchitecture="neutral" Publisher="CN=Aric Volman, O=Aric Volman, L=San Diego, S=California, C=US" Version="0.0.0.1" ResourceId="en-us"/>
+<Properties>
+<DisplayName>Mechanical Babulya</DisplayName>
+<Description>Basic Sudoku Solver</Description>
+<Logo>AppTile.png</Logo>
+<PublisherDisplayName>Aric Volman</PublisherDisplayName>
+</Properties>
+<Resources>
+<Resource Language="en-us"/>
+</Resources>
+<Applications>
+<Application Id="App"
+      Executable="mechanical-babulya.exe" EntryPoint="$targetentrypoint$">
+<VisualElements DisplayName="Mechanical Babulya" Logo="AppTile.png" SmallLogo="AppTile.png" Description="Basic Sudoku Solver" BackgroundColor="#AA00AA" ForegroundText="light">
+<DefaultTile WideLogo="AppTile.png"/>
+<SplashScreen Image="AppTile.png"/>
+</VisualElements>
+</Application>
+</Applications>
+<Prerequisites>
+<OSMinVersion>6.2.1</OSMinVersion>
+<OSMaxVersionTested>6.2.1</OSMaxVersionTested>
+</Prerequisites>
+</Package>
