@@ -30,7 +30,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QString openedFile = "";
-    std::vector<std::vector<int>> grid;
+    std::vector<std::vector<int> > grid;
 
     void initGrid();
 };
