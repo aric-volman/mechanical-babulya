@@ -3,5 +3,5 @@ Type=Application
 Name=Mechanical Babulya
 Comment=Basic Sudoku Solver
 Exec=mechanical-babulya
-Icon=logo.png
+Icon=logo
 Categories=Office;
