@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <qcustomplot.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,6 +19,7 @@ public:
     void setGridText();
     void getGridText();
     void resetGrid();
+
 private slots:
     void on_actionImport_triggered();
 
@@ -31,6 +33,8 @@ private:
     Ui::MainWindow *ui;
     QString openedFile = "";
     std::vector<std::vector<int> > grid;
+
+    QVector<int> completionVector;
 
     void initGrid();
 };

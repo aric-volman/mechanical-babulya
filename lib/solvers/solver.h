@@ -2,6 +2,7 @@
 #define SOLVER_H
 
 #include <vector>
+#include <list>
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +13,7 @@ class solver {
 
         std::vector<std::vector<int>> getGrid(){return grid;};
         void setGrid(std::vector<std::vector<int>> inputGrid);
+        std::list<double> getGridCompletionVector();
         int pass();
         int solve();
 
@@ -27,10 +29,12 @@ class solver {
         std::vector<std::string> index_row;
         std::vector<std::string> index_column;
         std::vector<std::vector<std::string>> index_square;
+        std::list<double> completionVector;
         int duplicateFound;
         int gridSum;
         int previousSum; // Something impossible to start with
 
+        double getGridCurrentCompletion();
         void findRowIndices() ;
         void findColumnIndices();
         void findSquareIndices();

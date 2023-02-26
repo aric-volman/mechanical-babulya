@@ -46,12 +46,18 @@ int solver::pass() {
 }
 
 int solver::solve() {
+    completionVector.clear();
     int retStatus = 0;
     previousSum = -1;
     duplicateFound = false;
     gridSum = 0;
 
-    for (int i = 1; i <= 100; i++) {
+    for (int i = 0; i <= 100; i++) {
+
+        completionVector.push_back(getGridCurrentCompletion());
+        std::cout << "Completion: " << getGridCurrentCompletion() << std::endl;
+        std::cout << "Solve #: " << i << std::endl;
+
         if (pass()) {
             std::cout << "Solved!" << std::endl;
             retStatus = 1;
@@ -65,10 +71,15 @@ int solver::solve() {
             retStatus = 3;
             break;
         }
+
         previousSum = gridSum;
     }
 
     return retStatus;
+}
+
+std::list<double> solver::getGridCompletionVector() {
+    return completionVector;
 }
 
 // Begin section of Private methods
@@ -187,6 +198,19 @@ bool solver::checkGridForCompletion() {
     }
     std::cout << "Sum: " << gridSum << std::endl;
     return (gridSum == 405); // 45 x 9
+}
+
+double solver::getGridCurrentCompletion() {
+    double gridCompletion = 0.0;
+    for (int y = 0; y < grid.size(); y++) {
+        for (int x = 0; x < grid.at(0).size(); x++) {
+            if (grid.at(y).at(x) != 0) {
+                gridCompletion++;
+            }
+        }
+    }
+    std::cout << "Percent Complete: " << (gridCompletion/81.0) * 100.0 << std::endl;
+    return (gridCompletion/81.0) * 100.0;
 }
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------
 

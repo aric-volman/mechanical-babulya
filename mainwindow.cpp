@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
+#include <qcustomplot.h>
 #include "lib/solvers/solver.cpp"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -24,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
         qApp->setStyleSheet(ts.readAll());
     }
     setWindowTitle(tr("Mechanical Babulya"));
+    ui->widget->addGraph();
 }
 
 MainWindow::~MainWindow()
@@ -94,7 +96,7 @@ void MainWindow::initGrid() {
     for(int y = 0; y < 9; y++) {
         for(int x = 0; x < 9; x++) {
             grid[y].push_back(0);
-            std::cout << "here" << std::endl;
+            // std::cout << "here" << std::endl;
         }
     }
 }
@@ -161,27 +163,45 @@ void MainWindow::on_actionExport_triggered()
 void MainWindow::on_pushButton_clicked()
 {
     getGridText();
-/*
-for (int y = 0; y < 9; y++) {
-    for (int x = 0; x < 9; x++) {
-        std::cout << grid.at(y).at(x);
-        }
-        }
-        std::cout << std::endl;
-    */
+
     solver *sudokuSolver = new solver();
     sudokuSolver->setGrid(grid);
     int warning = sudokuSolver->solve();
+
     grid = sudokuSolver->getGrid();
-    delete sudokuSolver;
+
     setGridText();
+
     if (warning == 1) {
+        std::list<double> rawdata = sudokuSolver->getGridCompletionVector();
+
+        auto rawDataFront = rawdata.begin();
+
+        QVector<double> data(rawdata.size(), 0.0);
+
+        QVector<double> x(rawdata.size(), 0.0);
+
+        for (int i = 0; i < data.size(); ++i) {
+            x.replace(i,  (double)i);
+            data.replace(i, *rawDataFront);
+            std::cout << *rawDataFront << std::endl;
+            std::advance(rawDataFront, 1);
+        }
+
+        ui->widget->graph(0)->setData(x, data);
+        ui->widget->rescaleAxes(true);
+        ui->widget->replot();
+
         QMessageBox::information(this, tr("Mechanical Babulya"), tr("Sudoku is solved!"));
+
+        delete sudokuSolver;
+
     } else if (warning == 2) {
         QMessageBox::warning(this, tr("Error"), tr("Duplicate numbers found!"));
     } else if (warning == 3) {
         QMessageBox::warning(this, tr("Error"), tr("Impossible puzzle!"));
     }
+
 }
 
 
