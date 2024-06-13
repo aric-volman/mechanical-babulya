@@ -177,13 +177,19 @@ void MainWindow::on_pushButton_clicked()
 
         auto rawDataFront = rawdata.begin();
 
-        QVector<double> data(rawdata.size(), 0.0);
+        QVector<double> data(rawdata.size());
 
-        QVector<double> x(rawdata.size(), 0.0);
+        QVector<double> x(rawdata.size());
 
-        for (int i = 0; i < data.size(); ++i) {
-            x.replace(i,  (double)i);
-            data.replace(i, *rawDataFront);
+        std::cout << "Size of Data: " << data.size() << std::endl;
+
+        for (int i = 1; i <= data.size(); i++) {
+
+            x[i] = (double)i;
+            data[i] = (double)*rawDataFront;
+            // x.replace(i,  (double)i);
+            // data.replace(i, *rawDataFront);
+            std::cout << data[i] << std::endl;
             std::cout << *rawDataFront << std::endl;
             std::advance(rawDataFront, 1);
         }
